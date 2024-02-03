@@ -123,13 +123,12 @@ static PyObject * Packer_meth_image(Packer * self, PyObject * args, PyObject * k
 }
 
 static PyObject * Packer_meth_build(Packer * self, PyObject * args, PyObject * kwargs) {
-    const char * keywords[] = {"size", "oversampling", "padding", NULL};
+    const char * keywords[] = {"size", "padding", NULL};
 
     int width, height;
-    int oversampling = 1;
     int padding = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(ii)|ii", (char **)keywords, &width, &height, &oversampling, &padding)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(ii)|i", (char **)keywords, &width, &height, &padding)) {
         return NULL;
     }
 
@@ -150,7 +149,6 @@ static PyObject * Packer_meth_build(Packer * self, PyObject * args, PyObject * k
 
     stbtt_pack_context pc;
     stbtt_PackBegin(&pc, atlas, width, height, 0, padding, NULL);
-    stbtt_PackSetOversampling(&pc, oversampling, oversampling);
 
     stbtt_packedchar * chars = (stbtt_packedchar *)malloc(num_rects * sizeof(stbtt_packedchar));
     stbrp_rect * rects = (stbrp_rect *)malloc(num_rects * sizeof(stbrp_rect));
@@ -241,8 +239,8 @@ static PyObject * Packer_meth_build(Packer * self, PyObject * args, PyObject * k
                 (float)box[2] / (float)width,
                 (float)box[3] / (float)height,
             };
-            float sx = (float)(c.x1 - c.x0) / (float)oversampling;
-            float sy = (float)(c.y1 - c.y0) / (float)oversampling;
+            float sx = (float)(c.x1 - c.x0);
+            float sy = (float)(c.y1 - c.y0);
             PyObject * glyph_info = Py_BuildValue(
                 "{O(iiii)O(ffff)O(ff)O(ff)Of}",
                 bbox, box[0], box[1], box[2], box[3],
