@@ -241,8 +241,8 @@ static PyObject * Packer_meth_build(Packer * self, PyObject * args, PyObject * k
                 (float)box[2] / (float)width,
                 (float)box[3] / (float)height,
             };
-            float sx = (float)(c.x1 - c.x0);
-            float sy = (float)(c.y1 - c.y0);
+            float sx = (float)(c.x1 - c.x0) / (float)oversampling;
+            float sy = (float)(c.y1 - c.y0) / (float)oversampling;
             PyObject * glyph_info = Py_BuildValue(
                 "{O(iiii)O(ffff)O(ff)O(ff)Of}",
                 bbox, box[0], box[1], box[2], box[3],
